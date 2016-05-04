@@ -1,6 +1,41 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+
+// Devise / Rails Authentication
+.controller('LoginCtrl', function($scope, $location, UserSession, $ionicPopup, $rootScope) {
+$scope.data = {};
+
+$scope.login = function() {
+  var user_session = new UserSession({ user: $scope.data });
+  user_session.$save(
+    function(data){
+      window.localStorage['userId'] = data.id;
+      window.localStorage['userName'] = data.name;
+      // $scope.user_name = window.localStorage['userName']
+      $location.path('/tab/dash');
+    },
+    function(err){
+      var error = err["data"]["error"] || err.data.join('. ')
+      var confirmPopup = $ionicPopup.alert({
+        title: 'An error occured',
+        template: error
+      });
+    }
+  );
+}
+})
+
+
+
+// Custom Dashboard View using JSON-API
+.controller('DashCtrl', function($scope, BlogEntry) {
+  BlogEntry.query().$promise.then(function(response){
+    $scope.user_name = window.localStorage['userName'];
+    $scope.blog_entries = response;
+  });
+})
+
+
 
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called

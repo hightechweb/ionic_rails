@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngResource'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,13 +23,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+
+.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+  // Needed to persist user session state cookies in rails app
+  $httpProvider.defaults.withCredentials = true;
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
+
+  // Rails / Devise Auth State Route for Login.html view
+    .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginCtrl'
+    })
+
 
   // setup an abstract state for the tabs directive
     .state('tab', {
@@ -80,6 +91,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  // $urlRouterProvider.otherwise('/tab/dash');
+
+  // set root route to /login page for devise authentication
+  $urlRouterProvider.otherwise('/login');
 
 });

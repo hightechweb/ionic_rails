@@ -1,5 +1,16 @@
 angular.module('starter.services', [])
 
+// Devise Authentication
+.factory('UserSession', function($resource) {
+  return $resource("http://purple-kings-landing-175566.nitrousapp.com:3000/users/sign_in.json");
+})
+
+// Blog Entry Factory Service
+.factory('BlogEntry', function($resource) {
+  return $resource("http://purple-kings-landing-175566.nitrousapp.com:3000/blog_entries/:id.json");
+})
+
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
